@@ -1,8 +1,13 @@
 """API calls for performing Discord API actions."""
 
+from __future__ import annotations
+
 from typing import Dict, List, Optional, Union
 import requests
 import logging
+
+from pyaccord.types.guild import Guild
+from pyaccord.types.user import User
 from .url_functions import get_api_url
 
 logger = logging.getLogger("DiscordAPI")
@@ -22,6 +27,101 @@ class DiscordAPIClient:
             "authorization": f"Bot {self.bot_token}",
             "Content-Type": "application/json"
         }
+
+    @property
+    def api_url(self) -> str:
+        return get_api_url(self.api_version)
+
+    # region Guilds
+
+    def create_guild(self, name: str) -> Guild:
+        """
+        Create a new guild.
+
+        """
+
+        data = {
+            "name": name
+        }
+
+        url = self.api_url + "/guilds"
+        r = requests.post(url, headers=self.headers, json=data)
+
+        r.raise_for_status()
+
+        guild = Guild.from_dict(r.json(), client=self)
+
+        logger.info(f"Guild created: {guild}")
+
+        return guild
+
+    def get_guild(self, id: int) -> Optional[Guild]:
+        """Get a guild by id"""
+
+        url = self.api_url + f"/guilds/{id}"
+        r = requests.get(url, headers=self.headers)
+
+        if not r.ok:
+            logger.error(f"{r.content}")
+        r.raise_for_status()
+
+        json_response = r.json()
+
+        guild = Guild.from_dict(json_response, client=self)
+
+        logger.debug(f"Got guild: {guild}")
+
+        return guild
+
+    def delete_guild(self, id: int) -> None:
+        """Deletes the specified guild. Bot must be the owner."""
+
+        url = self.api_url + f"/guilds/{id}"
+        r = requests.delete(url, headers=self.headers)
+
+        r.raise_for_status()
+
+        logger.info(f"Deleted guild with id: {id}")
+
+    # endregion
+
+    # region Users
+
+    # region Current User
+
+    def get_current_user(self) -> User:
+        """Get the current user."""
+
+        url = self.api_url + "/users/@me"
+        r = requests.get(url, headers=self.headers)
+
+        if not r.ok:
+            logger.error(f"{r.content}")
+        r.raise_for_status()
+
+        user = User.from_dict(r.json(), client=self, is_current_user=True)
+
+        logger.debug(f"Got current user: {user}")
+
+        return user
+
+    def get_current_user_guilds(self) -> List[Guild]:
+        """Gets the guild the user is in."""
+
+        url = self.api_url + "/users/@me/guilds"
+        r = requests.get(url, headers=self.headers)
+
+        r.raise_for_status()
+
+        guilds = Guild.from_list_of_dict(r.json())
+
+        logger.debug(f"Got current user guilds: {guilds}")
+
+        return guilds
+
+    # endregion
+
+    # endregion
 
     def create_guild_role(self, guild_id: int, *,
                           name: Optional[str] = None,
