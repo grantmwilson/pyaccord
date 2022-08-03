@@ -16,12 +16,11 @@ class User:
 
     def __init__(
             self, id: int, username: Optional[str] = None, discriminator: Optional[str] = None, *,
-            client: Optional[DiscordAPIClient] = None, is_current_user=False) -> None:
+            client: Optional[DiscordAPIClient] = None) -> None:
         self.id = id
         self.username = username
         self.discriminator = discriminator
         self._client = client
-        self._is_current_user = is_current_user
 
     @staticmethod
     def from_dict(d: Dict, *, client: Optional[DiscordAPIClient] = None, **kwargs) -> User:
@@ -36,6 +35,9 @@ class User:
     def __repr__(self) -> str:
         return f"<User: {self.username}#{self.discriminator} with id: {self.id}>"
 
+
+class CurrentUser(User):
+
     @property
     def guilds(self) -> List[Guild]:
         """Gets the user guilds, only for the current user."""
@@ -43,3 +45,16 @@ class User:
             return self._client.get_current_user_guilds()
         else:
             raise Exception("No Pyaccord client provided.")
+
+    def __repr__(self) -> str:
+        return f"<CurrentUser: {self.username}#{self.discriminator} with id: {self.id}>"
+
+    @staticmethod
+    def from_dict(d: Dict, *, client: Optional[DiscordAPIClient] = None, **kwargs) -> CurrentUser:
+        return CurrentUser(
+            id=d["id"],
+            username=d["username"],
+            discriminator=d["discriminator"],
+            client=client,
+            **kwargs
+        )

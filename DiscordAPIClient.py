@@ -7,7 +7,7 @@ import requests
 import logging
 
 from pyaccord.types.guild import Guild
-from pyaccord.types.user import User
+from pyaccord.types.user import CurrentUser, User
 from .url_functions import get_api_url
 
 logger = logging.getLogger("DiscordAPI")
@@ -89,7 +89,7 @@ class DiscordAPIClient:
 
     # region Current User
 
-    def get_current_user(self) -> User:
+    def get_current_user(self) -> CurrentUser:
         """Get the current user."""
 
         url = self.api_url + "/users/@me"
@@ -99,7 +99,7 @@ class DiscordAPIClient:
             logger.error(f"{r.content}")
         r.raise_for_status()
 
-        user = User.from_dict(r.json(), client=self, is_current_user=True)
+        user = CurrentUser.from_dict(r.json(), client=self)
 
         logger.debug(f"Got current user: {user}")
 
