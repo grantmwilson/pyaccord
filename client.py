@@ -13,7 +13,7 @@ from .url_functions import get_api_url
 logger = logging.getLogger("DiscordAPI")
 
 
-class DiscordAPIClient:
+class Client:
     """Class for performing generic Discord API actions."""
 
     def __init__(self, bot_token: str, *, api_version: Optional[int] = None) -> None:
@@ -88,6 +88,10 @@ class DiscordAPIClient:
     # region Users
 
     # region Current User
+
+    @property
+    def current_user(self) -> CurrentUser:
+        return self.get_current_user()
 
     def get_current_user(self) -> CurrentUser:
         """Get the current user."""

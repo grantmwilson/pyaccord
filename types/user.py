@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Dict, List, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from pyaccord.DiscordAPIClient import DiscordAPIClient
+    from pyaccord.client import Client
     from pyaccord.types.guild import Guild
 
 
@@ -11,19 +11,19 @@ class User:
     id: int
     username: Optional[str]
     discriminator: Optional[str]
-    _client: Optional[DiscordAPIClient]
+    _client: Optional[Client]
     _is_current_user: bool
 
     def __init__(
             self, id: int, username: Optional[str] = None, discriminator: Optional[str] = None, *,
-            client: Optional[DiscordAPIClient] = None) -> None:
+            client: Optional[Client] = None) -> None:
         self.id = id
         self.username = username
         self.discriminator = discriminator
         self._client = client
 
     @staticmethod
-    def from_dict(d: Dict, *, client: Optional[DiscordAPIClient] = None, **kwargs) -> User:
+    def from_dict(d: Dict, *, client: Optional[Client] = None, **kwargs) -> User:
         return User(
             id=d["id"],
             username=d["username"],
@@ -50,7 +50,7 @@ class CurrentUser(User):
         return f"<CurrentUser: {self.username}#{self.discriminator} with id: {self.id}>"
 
     @staticmethod
-    def from_dict(d: Dict, *, client: Optional[DiscordAPIClient] = None, **kwargs) -> CurrentUser:
+    def from_dict(d: Dict, *, client: Optional[Client] = None, **kwargs) -> CurrentUser:
         return CurrentUser(
             id=d["id"],
             username=d["username"],

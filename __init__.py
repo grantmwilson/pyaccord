@@ -1,3 +1,3 @@
 
 
-from .DiscordAPIClient import DiscordAPIClient  # noqa: F401
+from .client import Client  # noqa: F401
