@@ -3,9 +3,9 @@ from __future__ import annotations
 from enum import IntEnum
 
 from typing import Dict, List, Optional, TYPE_CHECKING
-from exceptions import NoPyaccordClientProvidedError
+from .exceptions import NoPyaccordClientProvidedError
 
-from invite import Invite
+from .invite import Invite
 
 if TYPE_CHECKING:
     from client import Client

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from typing import Dict, List, Optional, TYPE_CHECKING
-from channel import Channel
-from role import Role
-from exceptions import NoPyaccordClientProvidedError
+from .channel import Channel
+from .role import Role
+from .exceptions import NoPyaccordClientProvidedError
 
 
 if TYPE_CHECKING:

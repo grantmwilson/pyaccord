@@ -5,13 +5,13 @@ from __future__ import annotations
 from typing import Dict, List, Optional, Union
 import requests
 import logging
-from channel import BaseChannel, Channel
+from .channel import BaseChannel, Channel
 
-from guild import Guild
-from invite import Invite
-from role import Role
-from user import CurrentUser
-from url_functions import get_api_url
+from .guild import Guild
+from .invite import Invite
+from .role import Role
+from .user import CurrentUser
+from .url_functions import get_api_url
 
 logger = logging.getLogger("DiscordAPI")
 
