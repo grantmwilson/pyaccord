@@ -5,10 +5,13 @@ from __future__ import annotations
 from typing import Dict, List, Optional, Union
 import requests
 import logging
+from channel import BaseChannel, Channel
 
-from pyaccord.types.guild import Guild
-from pyaccord.types.user import CurrentUser, User
-from .url_functions import get_api_url
+from guild import Guild
+from invite import Invite
+from role import Role
+from user import CurrentUser
+from url_functions import get_api_url
 
 logger = logging.getLogger("DiscordAPI")
 
@@ -55,10 +58,15 @@ class Client:
 
         return guild
 
-    def get_guild(self, id: int) -> Optional[Guild]:
+    def get_guild(self, guild: int | Guild) -> Optional[Guild]:
         """Get a guild by id"""
 
-        url = self.api_url + f"/guilds/{id}"
+        if isinstance(guild, Guild):
+            guild_id = guild.id
+        else:
+            guild_id = guild
+
+        url = self.api_url + f"/guilds/{guild_id}"
         r = requests.get(url, headers=self.headers)
 
         if not r.ok:
@@ -66,6 +74,8 @@ class Client:
         r.raise_for_status()
 
         json_response = r.json()
+
+        print(json_response)
 
         guild = Guild.from_dict(json_response, client=self)
 
@@ -117,7 +127,7 @@ class Client:
 
         r.raise_for_status()
 
-        guilds = Guild.from_list_of_dict(r.json())
+        guilds = Guild.from_list_of_dict(r.json(), client=self)
 
         logger.debug(f"Got current user guilds: {guilds}")
 
@@ -132,7 +142,7 @@ class Client:
                           permissions: Optional[int] = None,
                           color: Optional[int] = None,
                           hoist: Optional[bool] = False,
-                          mentionable: Optional[bool] = False) -> int:
+                          mentionable: Optional[bool] = False) -> Role:
         """
         Create a new guild role.
 
@@ -163,14 +173,47 @@ class Client:
 
         response.raise_for_status()
 
-        json_response = response.json()
+        role = Role.from_dict(response.json(), client=self)
 
-        role_id = json_response["id"]
-        role_name = json_response["name"]
+        logger.info(f"Created new guild role {role.name} with snowflake: {role.id}")
 
-        logger.info(f"Created new guild role {role_name} with snowflake: {role_id}")
+        return role
 
-        return role_id
+    def get_guild_roles(self, guild: Union[Guild, int]) -> List[Role]:
+        """Get a guild's roles by guild id or Guild object."""
+
+        if isinstance(guild, Guild):
+            guild_id = guild.id
+        else:
+            guild_id = guild
+
+        url = self.api_url + f"/guilds/{guild_id}/roles"
+        r = requests.get(url, headers=self.headers)
+
+        if not r.ok:
+            logger.error((f"{r.content}"))
+        r.raise_for_status()
+
+        roles = Role.from_list_of_dict(r.json(), client=self)
+
+        return roles
+
+    def get_guild_channels(self, guild: Guild | int) -> List[Channel]:
+        """Get a guild's channels by guild id or Guild object."""
+
+        if isinstance(guild, Guild):
+            guild_id = guild.id
+        else:
+            guild_id = guild
+
+        url = self.api_url + f"/guilds/{guild_id}/channels"
+        r = requests.get(url, headers=self.headers)
+
+        r.raise_for_status()
+
+        channels = Channel.from_list_of_dict(r.json(), client=self)
+
+        return channels
 
     def get_channel(self, channel_id: int) -> dict:
         """Get the channel information."""
@@ -236,3 +279,29 @@ class Client:
         json_response = response.json()
 
         return json_response
+
+    def create_channel_invite(
+            self, channel: int | BaseChannel, *, max_age: Optional[int] = None, max_uses: Optional[int] = None,
+            temporary: Optional[bool] = None, unique: Optional[bool] = None) -> Invite:
+        """Create a channel invite"""
+
+        if isinstance(channel, BaseChannel):
+            channel_id = channel.id
+        else:
+            channel_id = channel
+
+        fields = [(max_age, "max_age"), (max_uses, "max_uses"), (temporary, "temporary"), (unique, "unique")]
+
+        data = {}
+
+        for var, nm in fields:
+            if var is not None:
+                data[nm] = var
+
+        url = get_api_url(self.api_version) + f"/channels/{channel_id}/invites"
+
+        r = requests.post(url, headers=self.headers, json=data)
+
+        r.raise_for_status()
+
+        return Invite.from_dict(r.json(), client=self)

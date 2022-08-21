@@ -2,8 +2,8 @@ from __future__ import annotations
 from typing import Dict, List, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from pyaccord.client import Client
-    from pyaccord.types.guild import Guild
+    from client import Client
+    from guild import Guild
 
 
 class User:
