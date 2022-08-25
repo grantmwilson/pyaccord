@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Union
+from typing import Dict, Iterable, List, Optional, Union
 import requests
 import logging
+
+from .permissions import Permissions
 from .channel import BaseChannel, Channel
 
 from .guild import Guild
@@ -137,9 +139,11 @@ class Client:
 
     # endregion
 
+    # region Guild Roles
+
     def create_guild_role(self, guild_id: int, *,
                           name: Optional[str] = None,
-                          permissions: Optional[int] = None,
+                          permissions: Optional[int | Iterable[Permissions]] = None,
                           color: Optional[int] = None,
                           hoist: Optional[bool] = False,
                           mentionable: Optional[bool] = False) -> Role:
@@ -156,11 +160,14 @@ class Client:
         Returns: guild id
         """
 
+        if isinstance(permissions, Iterable):
+            permissions = Permissions.merge(permissions)
+
         data = {}
 
         for title, item in [
             ("name", name),
-            ("permissions", permissions),
+            ("permissions", str(permissions)),
             ("color", color),
             ("hoist", hoist),
             ("mentionable", mentionable)
@@ -197,6 +204,27 @@ class Client:
         roles = Role.from_list_of_dict(r.json(), client=self)
 
         return roles
+
+    def add_role_to_guild_member(self, guild: Guild | int, member: int, role: Union[Role, int]) -> None:
+
+        if isinstance(guild, Guild):
+            guild_id = guild.id
+        else:
+            guild_id = guild
+
+        user_id = member
+
+        if isinstance(role, Role):
+            role_id = role.id
+        else:
+            role_id = role
+
+        url = self.api_url + f"/guilds/{guild_id}/members/{user_id}/roles/{role_id}"
+        r = requests.put(url, headers=self.headers)
+
+        r.raise_for_status()
+
+        return
 
     def get_guild_channels(self, guild: Guild | int) -> List[Channel]:
         """Get a guild's channels by guild id or Guild object."""
