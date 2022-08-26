@@ -167,13 +167,15 @@ class Client:
 
         for title, item in [
             ("name", name),
-            ("permissions", str(permissions)),
+            ("permissions", str(permissions) if permissions is not None else None),
             ("color", color),
             ("hoist", hoist),
             ("mentionable", mentionable)
         ]:
             if item is not None:
                 data[title] = item
+
+        logger.debug(f"Trying to create role with data: {data}")
 
         url = get_api_url(self.api_version) + f"/guilds/{guild_id}/roles"
         response = requests.post(url, headers=self.headers, json=data)
