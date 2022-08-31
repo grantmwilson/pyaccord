@@ -245,7 +245,9 @@ class Client:
 
         return channels
 
-    def get_channel(self, channel_id: int) -> dict:
+    # region Channels
+
+    def get_channel(self, channel_id: int) -> Channel:
         """Get the channel information."""
 
         url = get_api_url(self.api_version) + f"/channels/{channel_id}"
@@ -257,7 +259,21 @@ class Client:
 
         logger.debug(f"Got channel info: {json_response}")
 
-        return json_response
+        return Channel.from_dict(json_response)
+
+    def send_channel_message(self, channel_id: int, content: str) -> dict:
+        """Send a message to a channel"""
+
+        url = self.api_url + f"/channels/{channel_id}/messages"
+
+        data = {"content": content}
+
+        response = requests.post(url, headers=self.headers, json=data)
+
+        response.raise_for_status()
+
+        # TODO return message object
+        return response.json()  # Currently just returns the json of the message
 
     def get_channel_overwrites(self, channel_id: int) -> List[Dict[str, Union[str, int]]]:
         """Get all the current overwrites for a channel."""
@@ -335,3 +351,5 @@ class Client:
         r.raise_for_status()
 
         return Invite.from_dict(r.json(), client=self)
+
+    # endregion
