@@ -280,7 +280,7 @@ class Client:
 
         channel = self.get_channel(channel_id)
 
-        return channel["permission_overwrites"]
+        return channel.raw_permission_overwrites
 
     def modify_channel_overwrites(self, channel_id: int, overwrites: Union[dict, List[dict]]):
         """Change the permission overwrites for the given channel.

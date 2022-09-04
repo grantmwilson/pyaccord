@@ -23,19 +23,21 @@ class BaseChannel:
     guild_id: Optional[int]
     position: Optional[int]
     # permission_overwrites
+    raw_permission_overwrites: Optional[List[dict]]
     name: Optional[str]
 
     _client: Optional[Client]
 
     def __init__(
             self, id: int, *, type_int: int, position: Optional[int] = None, name: Optional[str],
-            client: Optional[Client] = None, guild_id: Optional[int]) -> None:
+            client: Optional[Client] = None, guild_id: Optional[int], raw_permission_overwrites: Optional[List[dict]] = None) -> None:
 
         self.id = id
         self.type_int = type_int
         self.position = position
         self.name = name
         self.guild_id = guild_id
+        self.raw_permission_overwrites = raw_permission_overwrites
 
         self._client = client
 
@@ -58,6 +60,7 @@ class BaseChannel:
             name=d["name"],
             type_int=d["type"],
             position=d["position"],
+            raw_permission_overwrites=d["permission_overwrites"],
             client=client,
             **kwargs
         )
@@ -79,8 +82,8 @@ class TextChannel(BaseChannel):
 
     def __init__(
             self, id: int, *, position: Optional[int] = None, name: Optional[str],
-            client: Optional[Client] = None, guild_id: Optional[int]) -> None:
-        super().__init__(id, position=position, name=name, client=client, guild_id=guild_id, type_int=0)
+            client: Optional[Client] = None, guild_id: Optional[int], **kwargs) -> None:
+        super().__init__(id, position=position, name=name, client=client, guild_id=guild_id, type_int=0, **kwargs)
 
     def __repr__(self) -> str:
         return f"<TextChannel: {self.name} #{self.id}>"
