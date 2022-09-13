@@ -95,6 +95,16 @@ class Client:
 
         logger.info(f"Deleted guild with id: {id}")
 
+    def remove_guild_member(self, guild_id: int, user_id: int) -> None:
+        """Kick a member from the guild"""
+
+        url = self.api_url + f"/guilds/{guild_id}/members/{user_id}"
+        r = requests.delete(url, headers=self.headers)
+
+        r.raise_for_status()
+
+        logger.info(f"Kicked guild member with id {user_id} from guild with id {guild_id}")
+
     # endregion
 
     # region Users
@@ -244,6 +254,10 @@ class Client:
         channels = Channel.from_list_of_dict(r.json(), client=self)
 
         return channels
+
+    # endregion
+
+
 
     # region Channels
 
