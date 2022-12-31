@@ -10,7 +10,6 @@ iniconfig==1.1.1
 mccabe==0.7.0
 packaging==22.0
 pluggy==1.0.0
--e git+https://github.com/grantmwilson/pyaccord.git@af7d03c5173031d9eb86b9ef29a9e06df50cf4a2#egg=pyaccord
 pycodestyle==2.10.0
 pyflakes==3.0.1
 pytest==7.2.0
