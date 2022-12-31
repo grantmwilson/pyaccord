@@ -1,1 +1,19 @@
+attrs==22.2.0
+autopep8==2.0.1
+certifi==2022.12.7
+charset-normalizer==2.1.1
+colorama==0.4.6
+exceptiongroup==1.1.0
+flake8==6.0.0
+idna==3.4
+iniconfig==1.1.1
+mccabe==0.7.0
+packaging==22.0
+pluggy==1.0.0
+-e git+https://github.com/grantmwilson/pyaccord.git@af7d03c5173031d9eb86b9ef29a9e06df50cf4a2#egg=pyaccord
+pycodestyle==2.10.0
+pyflakes==3.0.1
+pytest==7.2.0
 requests==2.28.1
+tomli==2.0.1
+urllib3==1.26.13
