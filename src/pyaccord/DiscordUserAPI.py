@@ -17,7 +17,7 @@ class DiscordUserAPI():
     """Class for performing actions on a discord user."""
 
     def __init__(self, *, client_id=None, client_secret=None, access_token=None, version=None, expires_in=None,
-                 refresh_token=None, oauth_code=None, callback_url=None, expiry=None, bot_token: str = None):
+                 refresh_token=None, oauth_code=None, callback_url=None, expiry=None, bot_token: Optional[str] = None):
         """Initialize Discord User API."""
 
         if not (access_token and refresh_token or oauth_code and callback_url):
