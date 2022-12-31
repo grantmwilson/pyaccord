@@ -1,0 +1,36 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install hatch
+        pip install .
+    - name: Check Version Number
+      run: |
+        version=$(hatch version)
+        if [[ "$version" =~ ^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+$ ]] then
+          echo 'pyaccord version:' $version 'is valid to release'
+          exit 0
+        else
+          echo 'pyaccord version:' $version 'is invalid to release, it is still development/release candidate'
+          exit 1
+        fi
