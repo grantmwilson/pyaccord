@@ -30,7 +30,8 @@ class BaseChannel:
 
     def __init__(
             self, id: int, *, type_int: int, position: Optional[int] = None, name: Optional[str],
-            client: Optional[Client] = None, guild_id: Optional[int], raw_permission_overwrites: Optional[List[dict]] = None) -> None:
+            client: Optional[Client] = None, guild_id: Optional[int],
+            raw_permission_overwrites: Optional[List[dict]] = None) -> None:
 
         self.id = id
         self.type_int = type_int

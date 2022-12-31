@@ -257,8 +257,6 @@ class Client:
 
     # endregion
 
-
-
     # region Channels
 
     def get_channel(self, channel_id: int) -> Channel:

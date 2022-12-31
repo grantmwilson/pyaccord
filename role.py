@@ -18,8 +18,9 @@ class Role:
     _client: Optional[Client]
 
     def __init__(
-            self, id: int, name: Optional[str] = None, *, position: Optional[int] = None, hoist: Optional[bool] = None,
-            managed: Optional[bool] = None, mentionable: Optional[bool] = None, client: Optional[Client] = None) -> None:
+            self, id: int, name: Optional[str] = None, *, position: Optional[int] = None,
+            hoist: Optional[bool] = None, managed: Optional[bool] = None, mentionable: Optional[bool] = None,
+            client: Optional[Client] = None) -> None:
 
         self.id = id
         self.name = name
