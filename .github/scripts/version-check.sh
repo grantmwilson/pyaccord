@@ -1,7 +1,9 @@
 #!/bin/bash
 
+pattern="^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+$"
+
 version=$(hatch version)
-if [[ "$version" =~ ^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+$ ]] then
+if [[ $version =~ $pattern ]]; then
     echo 'pyaccord version:' $version 'is valid to release'
     exit 0
 else
