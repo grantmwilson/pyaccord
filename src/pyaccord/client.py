@@ -287,7 +287,7 @@ class Client:
         # TODO return message object
         return response.json()  # Currently just returns the json of the message
 
-    def get_channel_overwrites(self, channel_id: int) -> List[Dict[str, Union[str, int]]]:
+    def get_channel_overwrites(self, channel_id: int) -> Optional[List[Dict[str, Union[str, int]]]]:
         """Get all the current overwrites for a channel."""
 
         channel = self.get_channel(channel_id)

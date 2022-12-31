@@ -23,7 +23,7 @@ class BaseChannel:
     guild_id: Optional[int]
     position: Optional[int]
     # permission_overwrites
-    raw_permission_overwrites: Optional[List[dict]]
+    raw_permission_overwrites: Optional[List[Dict[str, str | int]]]
     name: Optional[str]
 
     _client: Optional[Client]
